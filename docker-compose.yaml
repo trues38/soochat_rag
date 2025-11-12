@@ -1,0 +1,29 @@
+services:
+  # --------------------
+  # Qdrant (벡터 데이터베이스)
+  # --------------------
+  soochat_qdrant:
+    image: qdrant/qdrant:v1.11.0
+    container_name: soochat_qdrant
+    ports:
+      - "7333:6333"
+      - "7334:6334" # gRPC 포트
+    volumes:
+      - ./data/qdrant:/qdrant/storage
+    restart: always
+
+  # --------------------
+  # Postgres (Supabase DB)
+  # --------------------
+  soochat_db:
+    image: postgres:15
+    container_name: soochat_db
+    environment:
+      POSTGRES_USER: supabase
+      POSTGRES_PASSWORD: supabase
+      POSTGRES_DB: soochat
+    ports:
+      - "7432:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    restart: always
