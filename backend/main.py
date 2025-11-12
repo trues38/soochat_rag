@@ -21,7 +21,7 @@ app.add_middleware(
 # ================================================
 # 🤖 HuggingFace 모델 로드
 # ================================================
-MODEL_NAME = os.getenv("HF_MODEL", "BM-K/KoSimCSE-roberta-multitask")  # 한국어 RAG용
+MODEL_NAME = os.getenv("HF_MODEL", "intfloat/multilingual-e5-small")  # 한국어 RAG용
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model = SentenceTransformer(MODEL_NAME, device=device)
 
