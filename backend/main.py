@@ -21,7 +21,7 @@ app.add_middleware(
 # ================================================
 # 🤖 HuggingFace 모델 로드
 # ================================================
-MODEL_NAME = os.getenv("HF_MODEL", "jhgan/ko-sroberta-multitask")  # 한국어 RAG용
+MODEL_NAME = os.getenv("HF_MODEL", "BM-K/KoSimCSE-roberta-multitask")  # 한국어 RAG용
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model = SentenceTransformer(MODEL_NAME, device=device)
 
@@ -30,14 +30,12 @@ vector_store = []
 
 print(f"✅ HuggingFace model loaded: {MODEL_NAME} ({device})")
 
-
 # ================================================
 # 🧭 헬스체크
 # ================================================
 @app.get("/")
 async def root():
     return {"status": "ok", "message": "SooChat HuggingFace RAG Server running 🚀"}
-
 
 # ================================================
 # 📝 벡터 업서트 (Insert/Update)
@@ -61,7 +59,6 @@ async def upsert_vectors(request: Request):
 
     return {"status": "success", "count": len(texts)}
 
-
 # ================================================
 # 🔍 벡터 검색
 # ================================================
@@ -79,7 +76,6 @@ async def query_vectors(request: Request):
 
     query_emb = model.encode(query, convert_to_tensor=True)
     corpus_embeddings = torch.stack([v["embedding"] for v in vector_store])
-
     cosine_scores = util.cos_sim(query_emb, corpus_embeddings)[0]
     top_results = torch.topk(cosine_scores, k=min(limit, len(vector_store)))
 
@@ -93,7 +89,6 @@ async def query_vectors(request: Request):
         })
 
     return {"query": query, "results": results}
-
 
 # ================================================
 # ⚙️ 서버 실행 정보 출력
